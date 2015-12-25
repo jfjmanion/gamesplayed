@@ -58,8 +58,26 @@ function jQuerified($) {
     }
 }
 
+function createBox(){
+  var el=document.createElement('div');
+
+  el.style.position='fixed';
+  el.style.marginLeft='-110px';
+  el.style.top='0';
+  el.style.left='50%';
+  el.style.padding='15px';
+  el.style.zIndex = 50000000;
+  el.style.fontSize='12px';
+  el.style.color='#222';
+  el.style.backgroundColor='#fff';
+  el.setAttribute("id", "hockeyStats");
+  return el;
+}
 
 function myCode($){
+
+//$('head').append('<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">');
+
 
 //Get urls for days
 var urls = [];
@@ -144,18 +162,52 @@ urls.forEach(function(e, i, o) {
           var myRemainingTotal = 0;
           var yourRemainingTotal = 0;
 
+          //create the output table
+          var table = document.createElement('table');
+          $(table).addClass('table');
+          var row = table.insertRow();
+
+          row.insertCell(0).innerHTML = "Date";
+          row.insertCell(1).innerHTML = "My Players";
+          row.insertCell(2).innerHTML = "Their Players";
+
+
+
           totals.forEach(function(e, i, o) {
+            row = table.insertRow();
             //if the iteration is less than the current day - superstrike and don't add to the remaining total
              var matchupDate = new Date(e.date);
-             if (matchupDate.valueOf() <= today){
-               //strikethrough and don't add to remaining total
-             } else {
+             if (matchupDate.valueOf() >= today){
                //add to total remaining
                myRemainingTotal += e.myCount;
                yourRemainingTotal += e.yourCount;
+
+             } else {
+               //strikethrough and don't add to remaining total
+               $(row).css('text-decoration', 'line-through');
              }
+
+             row.insertCell(0).innerHTML = e.date;
+             row.insertCell(1).innerHTML = e.myCount;
+             row.insertCell(2).innerHTML = e.yourCount;
+
           });
-          console.log(myRemainingTotal);
+          //spacer
+          row = table.insertRow();
+          row.insertCell(0).innerHTML = "Total Games";
+          row.insertCell(1).innerHTML = myTotalCount;
+          row.insertCell(2).innerHTML = yourTotalCount;
+
+          row = table.insertRow();
+          row.insertCell(0).innerHTML = "Total Games Remaining";
+          row.insertCell(1).innerHTML = myRemainingTotal;
+          row.insertCell(2).innerHTML = yourRemainingTotal;
+
+
+          el = createBox();
+          el.appendChild(table);
+          var b=document.getElementsByTagName('body')[0];
+          b.appendChild(el);
         }
 
 
@@ -164,14 +216,3 @@ urls.forEach(function(e, i, o) {
 
 });
 }
-
-/* notes
-
-//date stuff
-var d = new Date("2015-12-22" + " 12:00:00");
-
-
-document.getElementById("demo").innerHTML = d;
-document.getElementById("demo2").innerHTML = today;
-
-*/
