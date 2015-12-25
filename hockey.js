@@ -76,8 +76,8 @@ function createBox(){
 
 function myCode($){
 
-//$('head').append('<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">');
-
+//add styling
+$("<style type='text/css'> #hockeyStats td{ padding: 10px;} #hockeyStats thead{font-weight:bold;} </style>").appendTo("head");
 
 //Get urls for days
 var urls = [];
@@ -122,11 +122,9 @@ urls.forEach(function(e, i, o) {
 
             //loop rows
             matchups.each(function(index, o){
-
                 //make sure they are actually playing this week
                 if ($.inArray($(this).find('td.Bg-shade').children('div').children('span').html(), positions) > -1){
                     //loop tds
-
                     $(this).children().each(function(index, out){
                         if ($(this).find('a.F-reset').length > 0){
                             if (index > breakpoint){
@@ -137,14 +135,13 @@ urls.forEach(function(e, i, o) {
                                 myCount++;
                             }
                         }
-
                     });
                 }
             });
+            
         //get the date of the current request
         var date = getParameterByName('date', e);
         //all rows are counted, add them to the array with the date as the index
-        // $totals[$date] = array('mine' => myCount, 'yours' => yourCount)
         temp = {};
         temp['date'] = date;
         temp['myCount'] = myCount;
@@ -158,33 +155,34 @@ urls.forEach(function(e, i, o) {
           totals = sortByKey(totals, 'date');
           // loop through the days $date => $values
           var today = new Date();
+          //remove a day to include today
+          var day = today.getDate() - 1;
+          today.setDate(day);
           today = today.valueOf();
           var myRemainingTotal = 0;
           var yourRemainingTotal = 0;
 
           //create the output table
           var table = document.createElement('table');
-          $(table).addClass('table');
-          var row = table.insertRow();
+          var head = table.createTHead();
+          var row = head.insertRow();
 
           row.insertCell(0).innerHTML = "Date";
           row.insertCell(1).innerHTML = "My Players";
           row.insertCell(2).innerHTML = "Their Players";
 
-
-
           totals.forEach(function(e, i, o) {
             row = table.insertRow();
             //if the iteration is less than the current day - superstrike and don't add to the remaining total
              var matchupDate = new Date(e.date);
-             if (matchupDate.valueOf() >= today){
+             if (matchupDate.valueOf() < today){
+               //strikethrough and don't add to remaining total
+               $(row).css('text-decoration', 'line-through');
+
+             } else {
                //add to total remaining
                myRemainingTotal += e.myCount;
                yourRemainingTotal += e.yourCount;
-
-             } else {
-               //strikethrough and don't add to remaining total
-               $(row).css('text-decoration', 'line-through');
              }
 
              row.insertCell(0).innerHTML = e.date;
