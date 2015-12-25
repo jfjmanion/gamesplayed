@@ -33,7 +33,6 @@ var jQuery;
   });
  })();
 
-
 var timer = setInterval(function(){ jQuerified(jQuery) }, 100);
 
 function jQuerified($) {
@@ -74,13 +73,13 @@ $returned = urls.forEach(function(e, i, o) {
 
         success: function(response) {
 
-            var test = response.content; //works - leave it be
-            var matchups = $(test).find('#matchupcontent1 table tbody').children(); //seems to work as well
+            var content = response.content; //works - leave it be
+            var matchups = $(content).find('#matchupcontent1 table tbody').children(); //seems to work as well
 
-           var breakpoint = matchups.length / 2;
+            var breakpoint = matchups.length / 2;
 
             //loop rows
-            matchups.each(function( i, o){
+            matchups.each(function(i, o){
 
                 //make sure they are actually playing this week
                 if ($.inArray($(this).find('td.Bg-shade').children('div').children('span').html(), positions) > -1){
@@ -112,9 +111,11 @@ $returned = urls.forEach(function(e, i, o) {
 
         counter++;
         if (counter == numDays){
-        // loop through the days
+        // loop through the days $date => $values
 
-            //if the iteration is less than the current day - don't add it
+            //if the iteration is less than the current day - superstrike and don't add to the remaining total
+
+              //
 
         }
 
