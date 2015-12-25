@@ -33,6 +33,20 @@ var jQuery;
   });
  })();
 
+function getParameterByName(name, url) {
+     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+         results = regex.exec(url);
+     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+ }
+
+function sortByKey(array, key) {
+  return array.sort(function(a, b) {
+  var x = a[key]; var y = b[key];
+  return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+  });
+}
+
 var timer = setInterval(function(){ jQuerified(jQuery) }, 100);
 
 function jQuerified($) {
@@ -51,17 +65,16 @@ function myCode($){
 var urls = [];
 var myTotalCount = 0;
 var yourTotalCount = 0;
-var myCount = 0;
-var yourCount = 0;
+
+var totals = [];
+var temp;
 
 var counter = 0;
 var positions = ['C', 'LW', 'RW', 'D'];
 
 var days = $('#matchup_table div.Grid-u-5-6 ul').children();
 days.each(function(i, o){
-    if(i !== 0){
-    urls[i - 1] = $(this).find('a.Navtarget').attr('href');
-    }
+    urls.push($(this).find('a.Navtarget').attr('href'));
 });
 
 var numDays = urls.length;
@@ -77,9 +90,11 @@ $returned = urls.forEach(function(e, i, o) {
             var matchups = $(content).find('#matchupcontent1 table tbody').children(); //seems to work as well
 
             var breakpoint = matchups.length / 2;
+            var myCount = 0;
+            var yourCount = 0;
 
             //loop rows
-            matchups.each(function(i, o){
+            matchups.each(function(index, o){
 
                 //make sure they are actually playing this week
                 if ($.inArray($(this).find('td.Bg-shade').children('div').children('span').html(), positions) > -1){
@@ -100,17 +115,22 @@ $returned = urls.forEach(function(e, i, o) {
                 }
             });
         //get the date of the current request
-        //$date = get['date']
-
+        var date = getParameterByName('date', e);
         //all rows are counted, add them to the array with the date as the index
         // $totals[$date] = array('mine' => myCount, 'yours' => yourCount)
+        temp = {};
+        temp['date'] = date;
+        temp['myCount'] = myCount;
+        temp['yourCount'] = yourCount;
 
-
-
-
+        totals.push(temp);
 
         counter++;
         if (counter == numDays){
+          console.log(sortByKey(totals, 'date'));
+
+
+
         // loop through the days $date => $values
 
             //if the iteration is less than the current day - superstrike and don't add to the remaining total
