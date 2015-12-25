@@ -63,23 +63,32 @@ function myCode($){
 
 //Get urls for days
 var urls = [];
+//totals for games played
 var myTotalCount = 0;
 var yourTotalCount = 0;
 
+//totals by day object
 var totals = [];
+
+//temp object of a single day totals
 var temp;
 
+//counter for completed ajax requests
 var counter = 0;
 var positions = ['C', 'LW', 'RW', 'D'];
 
 var days = $('#matchup_table div.Grid-u-5-6 ul').children();
+
+//don't add matchup totals
 days.each(function(i, o){
-    urls.push($(this).find('a.Navtarget').attr('href'));
+    if(i !== 0){
+    urls[i - 1] = $(this).find('a.Navtarget').attr('href');
+    }
 });
 
 var numDays = urls.length;
 
-$returned = urls.forEach(function(e, i, o) {
+urls.forEach(function(e, i, o) {
     $.ajax({
         method: "GET",
         url: e + "&ajaxrequest=1",
@@ -124,19 +133,29 @@ $returned = urls.forEach(function(e, i, o) {
         temp['yourCount'] = yourCount;
 
         totals.push(temp);
-
         counter++;
+
+        //if all requests have completed
         if (counter == numDays){
-          console.log(sortByKey(totals, 'date'));
+          totals = sortByKey(totals, 'date');
+          // loop through the days $date => $values
+          var today = new Date();
+          today = today.valueOf();
+          var myRemainingTotal = 0;
+          var yourRemainingTotal = 0;
 
-
-
-        // loop through the days $date => $values
-
+          totals.forEach(function(e, i, o) {
             //if the iteration is less than the current day - superstrike and don't add to the remaining total
-
-              //
-
+             var matchupDate = new Date(e.date);
+             if (matchupDate.valueOf() <= today){
+               //strikethrough and don't add to remaining total
+             } else {
+               //add to total remaining
+               myRemainingTotal += e.myCount;
+               yourRemainingTotal += e.yourCount;
+             }
+          });
+          console.log(myRemainingTotal);
         }
 
 
@@ -151,7 +170,7 @@ $returned = urls.forEach(function(e, i, o) {
 //date stuff
 var d = new Date("2015-12-22" + " 12:00:00");
 
- var today = new Date();
+
 document.getElementById("demo").innerHTML = d;
 document.getElementById("demo2").innerHTML = today;
 
