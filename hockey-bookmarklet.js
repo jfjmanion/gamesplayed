@@ -27,7 +27,7 @@ javascript:( function(){
           };
       head.appendChild(script);
     }
-    getScript('https:/*code.jquery.com/jquery-latest.min.js',function() {*/
+    getScript('https://code.jquery.com/jquery-latest.min.js',function() {*/
       if (otherlib) {
          jQuery.noConflict();
       }
