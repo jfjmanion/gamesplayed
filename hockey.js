@@ -92,7 +92,7 @@ javascript:( function(){
       var counter = 0;
       var positions = ['C', 'LW', 'RW', 'D'];
 
-      var days = $('#matchup_table div.Grid-u-5-6 ul').children();
+      var days = $('.navlist ul').children();
 
       /*don't add matchup totals*/
       days.each(function(i, o){
